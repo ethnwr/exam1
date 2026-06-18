@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Каталог книг</h1>
+
+<!-- Поиск -->
+<form method="get" style="margin: 15px 0;">
+    <input type="text" name="q" placeholder="Поиск по названию или автору..." value="{{ query }}" style="padding:8px; width:70%; border:1px solid #ddd; border-radius:4px;">
+    <button type="submit" class="btn btn-blue">🔍 Найти</button>
+    {% if query %}<a href="{{ url_for('index') }}" class="btn btn-gray">Сброс</a>{% endif %}
+</form>
+
+<!-- Категории -->
+<p>
+    <b>Категории:</b>
+    <a href="{{ url_for('index') }}" class="btn btn-gray" style="font-size:12px;">Все</a>
+    {% for cat in data.categories %}
+        <a href="{{ url_for('index', cat=cat.id) }}" class="btn btn-blue" style="font-size:12px;">{{ cat.name }}</a>
+    {% endfor %}
+</p>
+
+<!-- Товары -->
+<div style="display:flex; flex-wrap:wrap; gap:15px; margin-top:20px;">
+    {% for p in products %}
+        <div style="border:1px solid #ddd; border-radius:8px; padding:15px; width:calc(33% - 15px); background:white;">
+            <h3>{{ p.name }}</h3>
+            <p><i>{{ p.author or '' }}</i></p>
+            <p style="color:#666; font-size:13px;">{{ p.description }}</p>
+            <p style="color:#666;">{{ p.category }}</p>
+            <p style="font-size:18px; font-weight:bold; color:#27ae60;">{{ p.price }} руб.</p>
+            <p style="font-size:12px; color:#999;">В наличии: {{ p.stock }} шт.</p>
+            <a href="{{ url_for('cart_add', product_id=p.id) }}" class="btn btn-green">🛒 В корзину</a>
+        </div>
+    {% else %}
+        <p>Ничего не найдено</p>
+    {% endfor %}
+</div>
+{% endblock %}

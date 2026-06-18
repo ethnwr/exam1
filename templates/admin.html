@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>⚙️ Админ-панель</h1>
+
+{% if not logged_in %}
+    <form method="post" style="background:white; padding:30px; border-radius:8px; max-width:300px; margin:50px auto;">
+        <h3>Вход</h3>
+        <input type="password" name="password" placeholder="Пароль" required style="width:100%; padding:8px; margin:10px 0;">
+        <button type="submit" class="btn btn-blue">Войти</button>
+        <p style="font-size:12px; color:#999; margin-top:10px;">По умолчанию: admin</p>
+    </form>
+{% else %}
+    <a href="{{ url_for('admin_logout') }}" class="btn btn-red" style="float:right;">Выйти</a>
+
+    <!-- ЗАКАЗЫ -->
+    <h2 style="margin-top:30px;">📦 Заказы</h2>
+    {% if orders %}
+        {% for o in orders %}
+            <div style="background:white; padding:15px; border-radius:8px; margin:10px 0; border-left:4px solid {% if o.status=='новый' %}#3498db{% elif o.status=='в обработке' %}#f39c12{% elif o.status=='доставлен' %}#27ae60{% else %}#e74c3c{% endif %};">
+                <b>Заказ #{{ o.order_id }}</b> | {{ o.date }} | Статус: <b>{{ o.status }}</b>
+                <p>Клиент: {{ o.customer.last_name }} {{ o.customer.first_name }}, {{ o.customer.phone }}</p>
+                <ul>
+                    {% for item in o.items %}
+                        <li>{{ item.name }} x{{ item.quantity }} — {{ item.price * item.quantity }} руб.</li>
+                    {% endfor %}
+                </ul>
+                <p><b>Сумма: {{ o.total }} руб.</b></p>
+                <form method="post" action="{{ url_for('admin', action='status') }}" style="margin-top:10px;">
+                    <input type="hidden" name="order_id" value="{{ o.order_id }}">
+                    <select name="status" style="padding:5px;">
+                        <option value="новый" {% if o.status=='новый' %}selected{% endif %}>новый</option>
+                        <option value="в обработке" {% if o.status=='в обработке' %}selected{% endif %}>в обработке</option>
+                        <option value="доставлен" {% if o.status=='доставлен' %}selected{% endif %}>доставлен</option>
+                        <option value="отменен" {% if o.status=='отменен' %}selected{% endif %}>отменен</option>
+                    </select>
+                    <button type="submit" class="btn btn-blue" style="font-size:12px;">Сменить статус</button>
+                </form>
+            </div>
+        {% endfor %}
+    {% else %}
+        <p>Заказов пока нет</p>
+    {% endif %}
+
+    <!-- ДОБАВЛЕНИЕ ТОВАРА -->
+    <h2 style="margin-top:30px;">➕ Добавить товар</h2>
+    <form method="post" action="{{ url_for('admin', action='add_product') }}" style="background:white; padding:15px; border-radius:8px;">
+        <select name="category_id" required style="padding:6px;">
+            {% for cat in data.categories %}
+                <option value="{{ cat.id }}">{{ cat.name }}</option>
+            {% endfor %}
+        </select>
+        <input type="text" name="name" placeholder="Название" required style="padding:6px;">
+        <input type="text" name="author" placeholder="Автор" style="padding:6px;">
+        <input type="number" name="price" placeholder="Цена" step="0.01" required style="padding:6px; width:100px;">
+        <input type="number" name="stock" placeholder="Остаток" required style="padding:6px; width:100px;">
+        <input type="text" name="description" placeholder="Описание" style="padding:6px;">
+        <button type="submit" class="btn btn-green">Добавить</button>
+    </form>
+
+    <!-- УПРАВЛЕНИЕ ТОВАРАМИ -->
+    <h2 style="margin-top:30px;">📚 Управление товарами</h2>
+    {% for cat in data.categories %}
+        <h3>{{ cat.name }}</h3>
+        {% for p in cat.products %}
+            <div style="background:white; padding:10px; margin:5px 0; border-radius:5px; display:flex; justify-content:space-between; align-items:center;">
+                <span><b>{{ p.name }}</b> — {{ p.author or '' }} | {{ p.price }} руб. | Остаток: {{ p.stock }}</span>
+                <span>
+                    <form method="post" action="{{ url_for('admin', action='edit_product') }}" style="display:inline;">
+                        <input type="hidden" name="product_id" value="{{ p.id }}">
+                        <input type="text" name="name" placeholder="Название" style="width:120px; padding:3px;">
+                        <input type="text" name="author" placeholder="Автор" style="width:100px; padding:3px;">
+                        <input type="number" name="price" placeholder="Цена" step="0.01" style="width:80px; padding:3px;">
+                        <input type="number" name="stock" placeholder="Ост." style="width:60px; padding:3px;">
+                        <button type="submit" class="btn btn-blue" style="font-size:11px;">✏️</button>
+                    </form>
+                    <a href="{{ url_for('admin', action='delete_product', id=p.id) }}" class="btn btn-red" style="font-size:11px;" onclick="return confirm('Удалить?')">🗑️</a>
+                </span>
+            </div>
+        {% endfor %}
+    {% endfor %}
+{% endif %}
+{% endblock %}
