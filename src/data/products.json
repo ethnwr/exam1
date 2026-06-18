@@ -1,0 +1,37 @@
+{
+  "storeName": "BookShop",
+  "categories": [
+    {
+      "id": "cat_01",
+      "name": "Художественная литература",
+      "products": [
+        { "id": "pr_001", "name": "Мастер и Маргарита", "author": "М. Булгаков", "price": 450.00, "stock": 10, "description": "Классика русской литературы" },
+        { "id": "pr_002", "name": "1984", "author": "Дж. Оруэлл", "price": 380.00, "stock": 15, "description": "Антиутопия" }
+      ]
+    },
+    {
+      "id": "cat_02",
+      "name": "Техническая литература",
+      "products": [
+        { "id": "pr_003", "name": "Чистый код", "author": "Р. Мартин", "price": 890.00, "stock": 8, "description": "Создание, анализ и рефакторинг" },
+        { "id": "pr_004", "name": "Python. Карманный справочник", "author": "М. Лутц", "price": 650.00, "stock": 12, "description": "Справочник по языку Python" }
+      ]
+    },
+    {
+      "id": "cat_03",
+      "name": "Учебная литература",
+      "products": [
+        { "id": "pr_005", "name": "Высшая математика", "author": "А. Ильин", "price": 750.00, "stock": 20, "description": "Учебник для ВУЗов" },
+        { "id": "pr_006", "name": "Физика. 10 класс", "author": "Г. Мякишев", "price": 550.00, "stock": 25, "description": "Базовый уровень" }
+      ]
+    },
+    {
+      "id": "cat_04",
+      "name": "Детская литература",
+      "products": [
+        { "id": "pr_007", "name": "Сказки", "author": "А. Пушкин", "price": 320.00, "stock": 30, "description": "Сборник сказок" },
+        { "id": "pr_008", "name": "Незнайка на Луне", "author": "Н. Носов", "price": 420.00, "stock": 18, "description": "Приключения Незнайки" }
+      ]
+    }
+  ]
+}
